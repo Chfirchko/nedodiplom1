@@ -64,7 +64,11 @@ while True:
     print(path)
     for i in range(len(path) - 1, -1, -1):
         pg.draw.rect(sc, pg.Color('blue'), get_rect(path[i][0], path[i][1]), border_radius=TILE // 5)
-        clock.tick(15)
+        if i == len(path) - 1:
+            pass
+        else:
+            pg.draw.rect(sc, pg.Color('white'), get_rect(path[i+1][0], path[i+1][1]), border_radius=TILE // 5)
+        clock.tick(5)
         pg.display.update()
     # pygame necessary lines
     [exit() for event in pg.event.get() if event.type == pg.QUIT]
