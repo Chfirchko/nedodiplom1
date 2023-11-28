@@ -47,7 +47,8 @@ sc = pg.display.set_mode([cols * TILE, rows * TILE])
 clock = pg.time.Clock()
 # grid
 # grid = [[1 if random() < 0.2 else 0 for col in range(cols)] for row in range(rows)]
-grid = [[0 for col in range(cols)] for row in range(rows)]
+# grid = [[0 for col in range(cols)] for row in range(rows)]
+grid = [[1 if random() < 0.2 else 0 for col in range(cols)] for row in range(rows)]
 # dict of adjacency lists
 graph = {}
 for y, row in enumerate(grid):
@@ -56,10 +57,8 @@ for y, row in enumerate(grid):
             graph[(x, y)] = graph.get((x, y), []) + get_next_nodes(x, y)
 
 
-
-
 class Agent:
-    def __init__(self, x, y, path, goal=(1, 1), queue = deque([(1, 1)]), visited=None, long=0):
+    def __init__(self, x, y, path, goal=(1, 1), queue=deque([(1, 1)]), visited=None, long=0):
         if visited is None:
             visited = {(1, 1): None}
         self.start = (x, y)
@@ -68,6 +67,7 @@ class Agent:
         self.queue = queue
         self.visited = visited
         self.long = long
+
 
 # BFS settings     visited = {(1, 1): None}
 
@@ -81,15 +81,15 @@ for agent in Agents_A:
 
 # queue = deque([start])
 # visited = {start: None}
-goal = (5, 10)
+goal = (25, 10)
 running = True
 while running:
     pg.display.update()
     # fill screen
     sc.fill(pg.Color('black'))
     # draw grid
-    # [[pg.draw.rect(sc, pg.Color('darkorange'), get_rect(x, y), border_radius=TILE // 5)
-    #   for x, col in enumerate(row) if col] for y, row in enumerate(grid)]
+    [[pg.draw.rect(sc, pg.Color('darkorange'), get_rect(x, y), border_radius=TILE // 5)
+      for x, col in enumerate(row) if col] for y, row in enumerate(grid)]
     # bfs, get path to mouse click
     # mouse_pos = get_click_mouse_pos()
     # if mouse_pos and not grid[mouse_pos[1]][mouse_pos[0]]:
@@ -100,7 +100,6 @@ while running:
     for agent in Agents_A:
         agent.queue, agent.visited = bfs(agent.start, goal, graph)
         agent.goal = goal
-
 
     # draw path
     for Agent in Agents_A:
@@ -117,19 +116,25 @@ while running:
     for Agent in Agents_A:
         Agent.long = len(Agent.path)
 
-    while A1.long != 0 and A2.long != 0:
+    while A1.long != 0 or A2.long != 0:
 
         for Agent in Agents_A:
             if Agent.long == 0:
                 pass
             else:
-                Agent.long -= 1
+                if Agent.long < 0:
+                    Agent.long = 0
+                else:
+                    Agent.long -= 1
 
-                pg.draw.rect(sc, pg.Color('blue'), get_rect(Agent.path[Agent.long][0], Agent.path[Agent.long][1]), border_radius=TILE // 5)
+                pg.draw.rect(sc, pg.Color('blue'), get_rect(Agent.path[Agent.long][0], Agent.path[Agent.long][1]),
+                             border_radius=TILE // 5)
                 if Agent.long == len(Agent.path) - 1:
                     pass
                 else:
-                    pg.draw.rect(sc, pg.Color('brown'), get_rect(Agent.path[Agent.long + 1][0], Agent.path[Agent.long + 1][1]), border_radius=TILE // 5)
+                    pg.draw.rect(sc, pg.Color('brown'),
+                                 get_rect(Agent.path[Agent.long + 1][0], Agent.path[Agent.long + 1][1]),
+                                 border_radius=TILE // 5)
                 clock.tick(20)
                 pg.display.update()
             pg.display.update()
