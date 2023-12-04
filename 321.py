@@ -19,6 +19,9 @@ TILE = 60
 pg.init()
 sc = pg.display.set_mode([cols * TILE, rows * TILE])
 clock = pg.time.Clock()
+
+pause_text = pg.font.SysFont('Consolas', 32).render('Pause', True, pg.color.Color('White'))
+
 # grid
 grid = [[1 if random() < 0.2 else 0 for col in range(cols)] for row in range(rows)]
 # dict of adjacency lists
